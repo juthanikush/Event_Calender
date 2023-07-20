@@ -1,0 +1,35 @@
+table, th, td {
+    margin-top: 25px;
+    border: 1px solid black;
+}
+
+table{
+    width: 100%;
+}
+th{text-align: center!important;}
+td {
+    text-align: center;
+}
+
+.add-button{
+    margin-top: 15px;
+}
+.add_event{
+    margin: 30px;
+    display: none;
+}
+.file{
+    width: 205px !important;
+}
+.add_event {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 375px;
+    height: 580px;
+    background-color: white;
+    padding: 20px;
+    border: 1px solid black;
+    box-shadow: 10px 10px 5px #888888;
+ }
