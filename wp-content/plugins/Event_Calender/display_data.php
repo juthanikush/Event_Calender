@@ -36,7 +36,8 @@
             $location=get_post_meta($post_id,'location',true);
             $organizer=get_post_meta($post_id,'organizer',true);
             $img=get_post_meta($post_id,'img',true);
-           
+            $upload_dir = wp_upload_dir();
+            $path=$upload_dir['path'];
             ?>
             <tr>
               
@@ -46,10 +47,10 @@
                 <td><?php echo $time ?></td>
                 <td><?php echo $location ?></td>
                 <td><?php echo $organizer ?></td>
-                <td><?php echo $img ?> </td>
-                
-                <td><button class="btn btn-info">Edit</button>
-                <button class="btn btn-danger">Delete</button></td>
+                <td><img src="<?php echo $img ?>" alt="Girl in a jacket" width="100" height="100"> </td>
+              
+                <td><button class="btn btn-info" onclick="displaydata('<?php echo $post_id ?>')" >Edit</button>
+                <button  class="btn btn-danger" onclick="deletedata('<?php echo $post_id ?>')">Delete</button></td>
             </tr>
            <?php } ?>
 </table>

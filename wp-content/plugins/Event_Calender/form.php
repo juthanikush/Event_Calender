@@ -1,11 +1,4 @@
-<?php
 
-/**
- * Template Name:-  ADD Data
- */
-
- get_header();
-?>
 <form method="post" id="save_event" enctype="multipart/form-data">
     <h1>Add Event</h1>
     <div class="form-group">
@@ -42,6 +35,3 @@
 </form>
 
 
-<?php
-get_footer();
-?>

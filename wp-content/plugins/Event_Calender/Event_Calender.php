@@ -38,19 +38,22 @@ function Save_Data(){
         if (isset($_POST['submit'])) {
             $image = $_FILES['image'];
             if ($image['name']) {
-                // Set the upload directory and file name
-                $upload_dir = wp_upload_dir();
-                $image_name = $image['name'];
-                $image_path = $upload_dir['path'] . '/' . $image_name;
+                $upload_dir = 'upload/';
+
+                // Create the 'uploads' directory if it doesn't exist
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+                $image_name = $_FILES["image"]["name"];
+                $image_tmp_name = $_FILES["image"]["tmp_name"];
+                $image_extension = pathinfo($image_name, PATHINFO_EXTENSION);
+                $image_name=uniqid('image_') . '.' . $image_extension;
+                $image_path = $upload_dir . $image_name;
         
                 // Move the uploaded image to the destination directory
                 if (move_uploaded_file($image['tmp_name'], $image_path)) {
                     // Image uploaded successfully, you can now save the image path or perform further actions
-        
-                   
-                  
                 } else {
-                    
                     echo 'Failed to upload the image.';
                 }
             }
@@ -67,12 +70,8 @@ function Save_Data(){
                 update_post_meta($post_id,  'time',$_POST['time']);
                 update_post_meta($post_id,  'location', $_POST['location']);
                 update_post_meta($post_id,  'organizer', $_POST['organizer'],);
-                update_post_meta($post_id,  'img', $image_name);
+                update_post_meta($post_id,  'img', $image_path);
             }
-           
-            
-            
-            
         }
     }
     else{
@@ -113,3 +112,52 @@ function add_Event_Calender(){
 }
 add_action('admin_enqueue_scripts','add_Event_Calender');
 
+
+
+
+
+
+function delete_data() {
+    
+    $id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+    // Delete post meta data
+    delete_post_meta($id, 'title');
+    delete_post_meta($id, 'description');
+    delete_post_meta($id, 'date');
+    delete_post_meta($id, 'time');
+    delete_post_meta($id, 'location');
+    delete_post_meta($id, 'organizer');
+    delete_post_meta($id, 'img');
+    // Delete the post
+    wp_delete_post($id, true);
+    echo 'Data Deleted successfully';
+    wp_die();
+    
+}
+add_action('wp_ajax_delete_data', 'delete_data');
+
+function display_data(){
+    $id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+    $post = get_post($post_id);
+
+    if($post){
+        $title=get_post_meta($id, 'title', true);
+        $description=get_post_meta($id, 'description', true);
+        $date=get_post_meta($id, 'date', true);
+        $time=get_post_meta($id, 'time', true);
+        $location=get_post_meta($id, 'location', true);
+        $organizer=get_post_meta($id, 'organizer', true);
+        $img=get_post_meta($id, 'img', true);
+        $event = [
+            "title" => $title,
+            "description" => $description,
+            "date" => $date,
+            "time" => $time,
+            "location" => $location,
+            "organization" => $organization
+        ];
+        return $event;
+        wp_die();
+    }
+}
+add_action('wp_ajax_display_data', 'display_data');
