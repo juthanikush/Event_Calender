@@ -37,41 +37,55 @@ function Save_Data(){
     if(is_user_logged_in()== true){
         if (isset($_POST['submit'])) {
             $image = $_FILES['image'];
-            if ($image['name']) {
-                $upload_dir = 'upload/';
-
-                // Create the 'uploads' directory if it doesn't exist
-                if (!is_dir($upload_dir)) {
-                    mkdir($upload_dir, 0755, true);
+                if ($image['name']) {
+                    $upload_dir = 'upload/';
+    
+                    // Create the 'uploads' directory if it doesn't exist
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0755, true);
+                    }
+                    $image_name = $_FILES["image"]["name"];
+                    $image_tmp_name = $_FILES["image"]["tmp_name"];
+                    $image_extension = pathinfo($image_name, PATHINFO_EXTENSION);
+                    $image_name=uniqid('image_') . '.' . $image_extension;
+                    $image_path = $upload_dir . $image_name;
+            
+                    // Move the uploaded image to the destination directory
+                    if (move_uploaded_file($image['tmp_name'], $image_path)) {
+                        // Image uploaded successfully, you can now save the image path or perform further actions
+                    } else {
+                        echo 'Failed to upload the image.';
+                    }
                 }
-                $image_name = $_FILES["image"]["name"];
-                $image_tmp_name = $_FILES["image"]["tmp_name"];
-                $image_extension = pathinfo($image_name, PATHINFO_EXTENSION);
-                $image_name=uniqid('image_') . '.' . $image_extension;
-                $image_path = $upload_dir . $image_name;
-        
-                // Move the uploaded image to the destination directory
-                if (move_uploaded_file($image['tmp_name'], $image_path)) {
-                    // Image uploaded successfully, you can now save the image path or perform further actions
-                } else {
-                    echo 'Failed to upload the image.';
-                }
+            if(isset($_POST['event'])){
+                //update data
+                //post update
+                $post_id=$_POST['event'];
+                $post_data = array(
+                    'ID' => $post_id,           // Required: The post ID of the post to update.
+                    'post_title' => $_POST['title'], // The updated post title.
+                    'post_content' => "", // The updated post content.
+                    // Add any other post properties you want to update here.
+                  );
+                wp_update_post($post_data);
             }
-           
-            $post_id = wp_insert_post(array(
-                'post_title' => $_POST['title'], // Set the post title
-                'post_type' => 'event', // Set the post type (e.g., 'post', 'page', or a custom post type)
-                'post_status' => 'publish' // Set the post status (e.g., 'publish', 'draft', etc.)
-            ));
-            if($post_id){
-                update_post_meta($post_id, 'title',$_POST['title']);
-                update_post_meta($post_id,  'description',$_POST['description']);
-                update_post_meta($post_id,  'date',$_POST['date']);
-                update_post_meta($post_id,  'time',$_POST['time']);
-                update_post_meta($post_id,  'location', $_POST['location']);
-                update_post_meta($post_id,  'organizer', $_POST['organizer'],);
-                update_post_meta($post_id,  'img', $image_path);
+            else{
+                //insert data
+                $post_id = wp_insert_post(array(
+                    'post_title' => $_POST['title'], // Set the post title
+                    'post_type' => 'event', // Set the post type (e.g., 'post', 'page', or a custom post type)
+                    'post_status' => 'publish' // Set the post status (e.g., 'publish', 'draft', etc.)
+                ));
+                
             }
+            update_post_meta($post_id, 'title',$_POST['title']);
+            update_post_meta($post_id,  'description',$_POST['description']);
+            update_post_meta($post_id,  'date',$_POST['date']);
+            update_post_meta($post_id,  'time',$_POST['time']);
+            update_post_meta($post_id,  'location', $_POST['location']);
+            update_post_meta($post_id,  'organizer', $_POST['organizer'],);
+            update_post_meta($post_id,  'img', $image_path);
+            
         }
     }
     else{
@@ -102,20 +116,12 @@ function load_custom_form_page_template($template) {
 }
 add_filter('template_include', 'load_custom_form_page_template');
 
-
-
-
 function add_Event_Calender(){
     wp_enqueue_style('admin-style',plugins_url('include/css/style.css',__FILE__));
     wp_enqueue_style('admin-bootstrap',plugins_url('include/css/bootstrap.css',__FILE__));
     wp_enqueue_script('admin-javascript',plugins_url('include/js/admin_script.js',__FILE__));
 }
 add_action('admin_enqueue_scripts','add_Event_Calender');
-
-
-
-
-
 
 function delete_data() {
     

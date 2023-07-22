@@ -32,7 +32,7 @@ function displaydata(id) {
                 post_id: id, // Pass the ID as a parameter
             },
             success: function(response) {
-                alert(response);
+               
                 const divtag=document.getElementById("edit_event")
                 divtag.innerHTML=response;
                 //document.getElementById('id').value=id;
