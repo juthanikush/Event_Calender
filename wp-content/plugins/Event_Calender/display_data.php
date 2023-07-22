@@ -1,4 +1,4 @@
-<?php ?>
+
 <div class="wrap">
 <h1 >My Event Calendar</h1>
 <button type="button" onclick="openForm()" class="btn btn-success add-button" >+Add Event</button>
@@ -40,7 +40,7 @@
             $path=$upload_dir['path'];
             ?>
             <tr>
-              
+                
                 <td><?php echo $post_title ?></td>
                 <td><?php echo $description ?></td>
                 <td><?php echo $date ?></td>
@@ -63,5 +63,15 @@
 <div class="add_event" id="add_event">
 <?php
 include plugin_dir_path(__FILE__).'form.php';
+
 ?>
 </div>
+
+<div class="edit_event" id="edit_event"></div>
+
+<!-- <?php
+//include plugin_dir_path(__FILE__).'editform.php';
+
+?>
+</div> -->
+

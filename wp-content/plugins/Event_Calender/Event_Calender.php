@@ -13,7 +13,7 @@
  * Update URI:        https://example.com/my-plugin/
  * Text Domain:       Event_Calender
  */
-
+session_start();
 // Add a Event Calender top-level menu item in the WordPress admin menu
 function my_Event_Calender_menu() {
     add_menu_page(
@@ -131,33 +131,28 @@ function delete_data() {
     // Delete the post
     wp_delete_post($id, true);
     echo 'Data Deleted successfully';
+    wp_reset_postdata();
     wp_die();
     
 }
 add_action('wp_ajax_delete_data', 'delete_data');
 
 function display_data(){
-    $id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
-    $post = get_post($post_id);
+    
+    $id =$_POST['post_id'];
+    
+    $title=get_post_meta($id,'title',true);
+    $description=get_post_meta($id,'description',true);
+    $location=get_post_meta($id,'location',true);
+    $date=get_post_meta($id,'date',true);
+    $time=get_post_meta($id,'time',true);
+    $organizer=get_post_meta($id,'organizer',true);
+ 
 
-    if($post){
-        $title=get_post_meta($id, 'title', true);
-        $description=get_post_meta($id, 'description', true);
-        $date=get_post_meta($id, 'date', true);
-        $time=get_post_meta($id, 'time', true);
-        $location=get_post_meta($id, 'location', true);
-        $organizer=get_post_meta($id, 'organizer', true);
-        $img=get_post_meta($id, 'img', true);
-        $event = [
-            "title" => $title,
-            "description" => $description,
-            "date" => $date,
-            "time" => $time,
-            "location" => $location,
-            "organization" => $organization
-        ];
-        return $event;
-        wp_die();
-    }
-}
+  include plugin_dir_path(__FILE__).'editform.php'; 
+
+} 
+
+
 add_action('wp_ajax_display_data', 'display_data');
+
